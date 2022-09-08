@@ -2,27 +2,27 @@ const jwt = require('jsonwebtoken');
 
 function jwtmiddleWare(req, res, next) {
     if(!req.headers.authorization) {
-        res.status(401)
-        res.send('Unauthorized Request!');
+        return res.status(401).send('Unauthorized Request!');
     }
 
     let token = req.headers.authorization.split(' ')[1];
     if(!token){
-        res.status(401)
-        res.send('Unauthorized Request!');
+        return res.status(401).send('Unauthorized Request!');
     }
+    else{
 
-    let authVal = null;
-    try{
-        authVal = jwt.verify(token, 'secretStuff');
-    }
-    catch(err){
-        res.status(401)
-        res.send('Unauthorized Request!');
-    }
-    if(!authVal){
-        res.status(401)
-        res.send('Unauthorized Request!');
+        let authVal = null;
+        try{
+            authVal = jwt.verify(token, 'secretStuff');
+        }
+        catch(err){
+            // res.status(401)
+            // res.send('Unauthorized Request!');
+            console.log('jwt Error', err)
+        }
+        if(!authVal){
+            return res.status(401).send('Unauthorized Request!');
+        }
     }
     
     next()

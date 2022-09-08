@@ -7,7 +7,7 @@ router.post('/register', async (req, res, next) => {
     try{
         const response = await service.registerUser(req.body);
         res.status(200);
-        res.json(response);
+        res.json(response.message);
     }
     catch(err){
         console.log('Error in register', err);
@@ -68,9 +68,10 @@ router.patch('/editContact', jwtMiddleware, async (req, res) =>{
     }
 });
 
-router.get('/getContacts', jwtMiddleware, async (req, res) =>{
+router.get('/getContacts/:page/:ord/:userId', jwtMiddleware, async (req, res) =>{
     try{
-        const response = await service.getContacts(req.body);
+        const tempBody = {page: Number(req.params.page), ord: req.params.ord, userId: Number(req.params.userId)}
+        const response = await service.getContacts(tempBody);
         res.status(response.status);
         res.json(response.message);
     }
@@ -79,6 +80,12 @@ router.get('/getContacts', jwtMiddleware, async (req, res) =>{
         res.status(500);
         res.send('Cannot get contacts!');
     }
+})
+
+router.get('/checkAvailability', async (req, res) =>{
+    console.log('It is working fine!');
+    res.status(200);
+    res.send('Works Fine')
 })
 
 module.exports = router;

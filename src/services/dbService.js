@@ -5,7 +5,7 @@ dbService.registerUser = async(detailArr)=>{
     let client = null;
     try{
         client = await dbConn();
-        const response = await client.query('INSERT INTO phbook.users(first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING first_name, last_name, email, user_id', detailArr);
+        const response = await client.query('INSERT INTO phbook.users(user_name, email, password) VALUES ($1, $2, $3) RETURNING user_name, email, user_id', detailArr);
         // console.log('hueheuheuh',response);
         if(response.rowCount === 1){
             return response.rows[0]
@@ -28,7 +28,7 @@ dbService.loginUser = async (details)=>{
     let client = null;
     try{
         client = await dbConn();
-        const response = await client.query('SELECT email, password, first_name, last_name, user_id FROM phbook.users WHERE email = $1;', details);
+        const response = await client.query('SELECT email, password, user_name, user_id FROM phbook.users WHERE email = $1;', details);
         if(response.rowCount === 1){
             return response.rows[0]; 
         }
@@ -136,9 +136,11 @@ dbService.getContacts = async (details) => {
     let client = null;
     try{
         client = await dbConn();
-        const response = await client.query('SELECT contact_id, name, email, phone_number FROM phbook.contacts WHERE user_id = $1;', details);
+        const response = await client.query(`SELECT contact_id, name, email, phone_number FROM phbook.contacts WHERE user_id = ${details[0]} ORDER BY NAME ${details[1]} LIMIT 20 OFFSET ${details[2]};`);
+        const countResponse = await client.query(`SELECT COUNT(*) FROM phbook.contacts WHERE user_id = ${details[0]};`)
+        console.log(`SELECT contact_id, name, email, phone_number FROM phbook.contacts WHERE user_id = ${details[0]} ORDER BY NAME ${details[1]} LIMIT 20 OFFSET ${details[2]};`)
         if(response.rowCount > 0){
-            return response.rows;
+            return {items: response.rows, total_count: countResponse.rows[0].count};
         }
         else{
             return [];

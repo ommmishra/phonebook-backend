@@ -5,15 +5,10 @@ const jwt = require('jsonwebtoken');
 appServices.registerUser = async(bodyData)=>{
     try{
         const detailArr = [];
-        if(!bodyData.firstName){
+        if(!bodyData.userName){
             return {status: 401, message: 'Invalid Request'};
         }
-        detailArr.push(bodyData.firstName);
-
-        if(!bodyData.lastName){
-            return {status: 401, message: 'Invalid Request'};
-        }
-        detailArr.push(bodyData.lastName);
+        detailArr.push(bodyData.userName);
 
         if(!bodyData.email){
             return {status: 401, message: 'Invalid Request'};
@@ -26,9 +21,9 @@ appServices.registerUser = async(bodyData)=>{
         detailArr.push(bodyData.password);
 
         const response = await dbService.registerUser(detailArr);
-        const payLoad = { subject: response.first_name + response.last_name + response.email };
+        const payLoad = { subject: response.user_name + response.email };
         const token = await jwt.sign(payLoad, 'secretStuff');
-        return {token: token, message:{firstName: response.first_name, lastName: response.last_name}};
+        return {token: token, message:{userName: response.user_name, userId: response.user_id}};
     }
     catch(err){
         console.log('Error while registering user', err);
@@ -51,9 +46,9 @@ appServices.loginUser = async (bodyData)=>{
                 return {status: 401, message: 'Invalid Password'}
             }
             else{
-                const payLoad = { subject: response.first_name + response.last_name + response.email };
+                const payLoad = { subject: response.user_name + response.email };
                 const token = await jwt.sign(payLoad, 'secretStuff');
-                return {status: 200, message:{ userId: response.user_id, firstName: response.first_name, lastName: response.last_name, token: `Bearer ${token}` }};
+                return {status: 200, message:{ userId: response.user_id, userName: response.user_name, token: `Bearer ${token}` }};
             }
         }
     }
@@ -65,11 +60,12 @@ appServices.loginUser = async (bodyData)=>{
 
 appServices.insertContact = async (bodyData)=>{
     try{
+        console.log('boydData', bodyData);
         const detailArr = [];
-        if(!bodyData.user_id){
+        if(!bodyData.userId){
             return {status: 401, message: 'Invalid Request'};
         }
-        detailArr.push(bodyData.user_id)
+        detailArr.push(bodyData.userId)
 
         if(!bodyData.name){
             return {status: 401, message: 'Name Missing'};
@@ -156,10 +152,18 @@ appServices.editContact = async (bodyData) =>{
 
 appServices.getContacts = async (bodyData) =>{
     try{
+        const queryParams =[]
         if(!bodyData.userId){
             return {status: 401, message: 'Invalid Request'}
         }
-        const response = await dbService.getContacts([bodyData.userId]);
+        queryParams.push(bodyData.userId);
+
+        if(!bodyData.ord || !(bodyData.ord === 'desc' || bodyData.ord === 'asc')){
+            queryParams.push('asc');
+        }
+        queryParams.push(bodyData.ord);
+        queryParams.push( 20 * bodyData.page);
+        const response = await dbService.getContacts(queryParams);
         if(response.length === 0){
             return {status: 200, message: null};
         }
