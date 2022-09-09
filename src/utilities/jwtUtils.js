@@ -1,10 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 function jwtmiddleWare(req, res, next) {
+    console.log('middleware',req.headers);
     if(!req.headers.authorization) {
         return res.status(401).send('Unauthorized Request!');
     }
-
+    
     let token = req.headers.authorization.split(' ')[1];
     if(!token){
         return res.status(401).send('Unauthorized Request!');

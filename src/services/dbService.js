@@ -100,16 +100,17 @@ dbService.editContact = async (editDetails)=>{
     try{
         let query = `UPDATE phbook.contacts SET `
         if(editDetails.name){
-            query += `name = '${editDetails.name}' `;
+            query += `name = '${editDetails.name}', `;
         }
         if(editDetails.phoneNumber){
-            query += `phone_number = '${editDetails.phoneNumber}' `;
+            query += `phone_number = '${editDetails.phoneNumber}', `;
         }
         if(editDetails.email){
             query += `email = '${editDetails.email}' `;
         }
         query += `WHERE contact_id = ${editDetails.contactId} and user_id = ${editDetails.userId} RETURNING contact_id, name, email, phone_number;`
 
+        console.log('Query', query);
         client = await dbConn();
         const response = await client.query(query);
 

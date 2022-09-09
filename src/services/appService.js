@@ -23,7 +23,7 @@ appServices.registerUser = async(bodyData)=>{
         const response = await dbService.registerUser(detailArr);
         const payLoad = { subject: response.user_name + response.email };
         const token = await jwt.sign(payLoad, 'secretStuff');
-        return {token: token, message:{userName: response.user_name, userId: response.user_id}};
+        return {message:{userName: response.user_name, userId: response.user_id, token: `Bearer ${token}`}};
     }
     catch(err){
         console.log('Error while registering user', err);
@@ -130,12 +130,12 @@ appServices.editContact = async (bodyData) =>{
         }
         detailObj.userId = bodyData.userId;
 
-        if(bodyData.name && bodyData.name === ''){
+        if(!bodyData.name || bodyData.name === ''){
             return {status: 401, message: 'Name cannot be empty!'}
         }
         detailObj.name = bodyData.name;
 
-        if(bodyData.phoneNumber && bodyData.phoneNumber === ''){
+        if(!bodyData.phoneNumber || bodyData.phoneNumber === ''){
             return {status: 401, message: 'Number cannot be empty!'}
         }
         detailObj.phoneNumber =  bodyData.phoneNumber;

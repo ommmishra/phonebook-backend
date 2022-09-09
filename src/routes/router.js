@@ -7,6 +7,9 @@ router.post('/register', async (req, res, next) => {
     try{
         const response = await service.registerUser(req.body);
         res.status(200);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -20,6 +23,9 @@ router.post('/login', async (req, res, next) => {
     try{
         const response = await service.loginUser(req.body);
         res.status(response.status);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -33,6 +39,9 @@ router.post('/addContact', jwtMiddleware, async (req, res, next) => {
     try{
         const response = await service.insertContact(req.body);
         res.status(response.status);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -46,6 +55,9 @@ router.delete('/deleteContact', jwtMiddleware, async (req, res) =>{
     try{
         const response = await service.deleteContact(req.body);
         res.status(response.status);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -59,6 +71,9 @@ router.patch('/editContact', jwtMiddleware, async (req, res) =>{
     try{
         const response = await service.editContact(req.body);
         res.status(response.status);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -73,6 +88,9 @@ router.get('/getContacts/:page/:ord/:userId', jwtMiddleware, async (req, res) =>
         const tempBody = {page: Number(req.params.page), ord: req.params.ord, userId: Number(req.params.userId)}
         const response = await service.getContacts(tempBody);
         res.status(response.status);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH");
+        res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization, authorization");
         res.json(response.message);
     }
     catch(err){
@@ -85,7 +103,7 @@ router.get('/getContacts/:page/:ord/:userId', jwtMiddleware, async (req, res) =>
 router.get('/checkAvailability', async (req, res) =>{
     console.log('It is working fine!');
     res.status(200);
-    res.send('Works Fine')
+    res.json('Works Fine')
 })
 
 module.exports = router;

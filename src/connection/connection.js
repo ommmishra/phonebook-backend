@@ -2,11 +2,7 @@ const { Pool } = require('pg');
 
 async function getConnection(){
     const dbPool = new Pool({
-        user: 'pddev',
-        host: 'localhost',
-        port: '5432',
-        password: 'password',
-        database: 'cont'
+
     });
 
     try{    

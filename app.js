@@ -10,5 +10,7 @@ app.use(bodyParser.json());
 
 app.use('/', router);
 
-app.listen(2222)
-console.log('Server started at 2222')
+// app.listen(2222)
+// console.log('Server started at 2222')
+
+module.exports.server = sls(app);
